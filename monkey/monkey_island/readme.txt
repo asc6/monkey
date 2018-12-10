@@ -100,3 +100,64 @@ How to run:
 	
 How to run:
 1. run run.sh (located under /linux)
+
+
+---------------- On RHEL/Cent ----------------:
+1. Create the following directories:
+    sudo mkdir /var/monkey_island
+    sudo chmod 777 /var/monkey_island
+    mkdir -p /var/monkey_island/bin/mongodb
+    mkdir -p /var/monkey_island/db
+    mkdir -p /var/monkey_island/cc/binaries
+
+2. Install dependencies 
+    sudo yum groupinstall "Development Tools"
+    sudo yum install python-devl 
+
+2. Install the packages from monkey_island/requirements.txt:
+	sudo python -m pip install -r /var/monkey_island/requirements.txt
+	If pip is not installed, install the python-pip package. Make sure the server is running Python 2.7 and not Python 3+.
+	
+3. put monkey binaries in /var/monkey_island/cc/binaries
+    monkey-linux-64 - monkey binary for linux 64bit
+	monkey-linux-32 - monkey binary for linux 32bit
+	monkey-windows-32.exe - monkey binary for windows 32bit
+	monkey-windows-64.exe - monkey binary for windows 64bi
+
+4. Setup MongoDB (Use one of the two following options):
+
+        4.1 Download MongoDB and extract it to /var/monkey_island/bin/mongodb
+                for cent/rhel 64 - https://downloads.mongodb.org/linux/mongodb-linux-x86_64-rhel70-latest.tgz
+               
+                find more at - https://www.mongodb.org/downloads#production
+                untar.gz with: tar -zxvf filename.tar.gz -C /var/monkey_island/bin/mongodb
+                (make sure the content of the mongo folder is in this directory, meaning this path exists:
+                        /var/monkey_island/bin/mongodb/bin)
+        
+        OR
+
+        4.1 If you have an instance of mongodb running on a different host, set the MONKEY_MONGO_URL environment variable:
+
+            example for mongodb running on host with IP address 192.168.10.10:
+
+                set MONKEY_MONGO_URL="mongodb://192.168.10.10:27107/monkeyisland"
+
+
+5. install OpenSSL
+    sudo yum install openssl
+
+6. Generate SSL Certificate, Run create_certificate.sh (located under /linux)
+
+7. Copy monkey island server to /var/monkey_island:
+    cp -r [monkey_island_source]/cc /var/monkey_island/
+
+8. Install npm
+	8.1. Download and install from: https://www.npmjs.com/get-npm
+	
+9. Build Monkey Island frontend
+	9.1. cd to 'monkey_island/cc/ui'
+	9.2. run 'npm update'
+	9.3. run 'npm run dist'
+	
+How to run:
+1. run run.sh (located under /linux)
