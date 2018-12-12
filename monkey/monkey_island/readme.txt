@@ -45,7 +45,7 @@ How to set up the Monkey Island server:
 How to run:
 1. When your current working directory is monkey_island, run monkey_island\windows\run_server.bat
 
----------------- On Linux ----------------:
+---------------- On Debian/Ubuntu Linux ----------------:
 1. Create the following directories:
     sudo mkdir /var/monkey_island
     sudo chmod 777 /var/monkey_island
@@ -103,34 +103,37 @@ How to run:
 
 
 ---------------- On RHEL/Cent ----------------:
-1. Create the following directories:
-    sudo mkdir /var/monkey_island
-    sudo chmod 777 /var/monkey_island
-    mkdir -p /var/monkey_island/bin/mongodb
-    mkdir -p /var/monkey_island/db
-    mkdir -p /var/monkey_island/cc/binaries
+1. Install Packages
+    1.1 Install EPEL
+    1.2 Install dependencies
+     sudo yum groupinstall "Development Tools"
+     sudo yum install python-devel python-pip wget git openssl
 
-2. Install dependencies 
-    sudo yum groupinstall "Development Tools"
-    sudo yum install python-devl 
+2. Create the following directory:
+    sudo mkdir /var/monkey
+    
+3. Clone or download repository to your system
+   3.1 Copy or symlink the files from the repo to your install folder 
+       sudo cp ~/monkey/monkey/* /var/monkey/ -r
+   3.2 sudo chmod 777 /var/monkey -R
 
-2. Install the packages from monkey_island/requirements.txt:
-	sudo python -m pip install -r /var/monkey_island/requirements.txt
-	If pip is not installed, install the python-pip package. Make sure the server is running Python 2.7 and not Python 3+.
+4. Install the packages from monkey_island/requirements.txt:
+    sudo python -m pip install -r /var/monkey/monkey_island/requirements.txt
+	Make sure the server is running Python 2.7 and not Python 3+.
 	
-3. put monkey binaries in /var/monkey_island/cc/binaries
+5. put monkey binaries in /var/monkey_island/cc/binaries
     monkey-linux-64 - monkey binary for linux 64bit
 	monkey-linux-32 - monkey binary for linux 32bit
 	monkey-windows-32.exe - monkey binary for windows 32bit
 	monkey-windows-64.exe - monkey binary for windows 64bi
 
-4. Setup MongoDB (Use one of the two following options):
+6. Setup MongoDB (Use one of the two following options):
 
         4.1 Download MongoDB and extract it to /var/monkey_island/bin/mongodb
                 for cent/rhel 64 - https://downloads.mongodb.org/linux/mongodb-linux-x86_64-rhel70-latest.tgz
                
                 find more at - https://www.mongodb.org/downloads#production
-                untar.gz with: tar -zxvf filename.tar.gz -C /var/monkey_island/bin/mongodb
+                untar.gz with: tar -zxvf filename.tar.gz -C /var/monkey_island/bin/mongodb --strip-components=1
                 (make sure the content of the mongo folder is in this directory, meaning this path exists:
                         /var/monkey_island/bin/mongodb/bin)
         
@@ -143,21 +146,24 @@ How to run:
                 set MONKEY_MONGO_URL="mongodb://192.168.10.10:27107/monkeyisland"
 
 
-5. install OpenSSL
-    sudo yum install openssl
-
-6. Generate SSL Certificate, Run create_certificate.sh (located under /linux)
-
-7. Copy monkey island server to /var/monkey_island:
-    cp -r [monkey_island_source]/cc /var/monkey_island/
+7. Generate SSL Certificate
+    /var/monkey/monkey_island/linux/create_certificate.sh
 
 8. Install npm
 	8.1. Download and install from: https://www.npmjs.com/get-npm
 	
 9. Build Monkey Island frontend
-	9.1. cd to 'monkey_island/cc/ui'
+	9.1. cd to '/var/monkey/monkey_island/cc/ui'
 	9.2. run 'npm update'
 	9.3. run 'npm run dist'
 	
 How to run:
-1. run run.sh (located under /linux)
+1. /var/monkey/monkey_island/linux/run.sh
+
+How to Install as a Daemon
+sudo cp /var/monkey/monkey_island/linux/rhel/systemd/*.service /lib/systemd/system/
+
+Enable boot start with the following commands
+ systemctl daemon-reload
+ systemctl enable monkey-mongo.service
+ systemctl enable monkey-island.service 
