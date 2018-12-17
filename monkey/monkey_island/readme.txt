@@ -108,20 +108,23 @@ How to run:
     1.2 Install dependencies
      sudo yum groupinstall "Development Tools"
      sudo yum install python-devel python-pip wget git openssl
-
-2. Create the following directory:
-    sudo mkdir /var/monkey
     
-3. Clone or download repository to your system
-   3.1 Copy or symlink the files from the repo to your install folder 
-       sudo cp ~/monkey/monkey/* /var/monkey/ -r
-   3.2 sudo chmod 777 /var/monkey -R
+2. Clone or download repository to your system
+   2.1 git clone https://github.com/guardicore/monkey.git
+   2.2 Copy or symlink the files from the repo to your install folder
+       sudo cp ~/monkey/monkey/ /var/monkey/ -r
+OR     sudo ln -s ~/monkey/monkey/ /var/monkey
+   2.3 sudo chmod 777 /var/monkey/ -R
+
+3. Create the following directory:
+    mkdir -p /var/monkey/monkey_island/bin/mongodb
+    mkdir -p /var/monkey/monkey_island/db
 
 4. Install the packages from monkey_island/requirements.txt:
     sudo python -m pip install -r /var/monkey/monkey_island/requirements.txt
 	Make sure the server is running Python 2.7 and not Python 3+.
 	
-5. put monkey binaries in /var/monkey_island/cc/binaries
+5. put monkey binaries in /var/monkey/monkey_island/cc/binaries
     monkey-linux-64 - monkey binary for linux 64bit
 	monkey-linux-32 - monkey binary for linux 32bit
 	monkey-windows-32.exe - monkey binary for windows 32bit
@@ -129,17 +132,17 @@ How to run:
 
 6. Setup MongoDB (Use one of the two following options):
 
-        4.1 Download MongoDB and extract it to /var/monkey_island/bin/mongodb
+        6.1 Download MongoDB and extract it to /var/monkey_island/bin/mongodb
                 for cent/rhel 64 - https://downloads.mongodb.org/linux/mongodb-linux-x86_64-rhel70-latest.tgz
                
                 find more at - https://www.mongodb.org/downloads#production
-                untar.gz with: tar -zxvf filename.tar.gz -C /var/monkey_island/bin/mongodb --strip-components=1
+                untar.gz with: tar -zxvf mongodb*.tgz -C /var/monkey/monkey_island/bin/mongodb --strip-components=1
                 (make sure the content of the mongo folder is in this directory, meaning this path exists:
-                        /var/monkey_island/bin/mongodb/bin)
+                        /var/monkey/monkey_island/bin/mongodb/bin)
         
         OR
 
-        4.1 If you have an instance of mongodb running on a different host, set the MONKEY_MONGO_URL environment variable:
+        6.1 If you have an instance of mongodb running on a different host, set the MONKEY_MONGO_URL environment variable:
 
             example for mongodb running on host with IP address 192.168.10.10:
 
@@ -157,13 +160,17 @@ How to run:
 	9.2. run 'npm update'
 	9.3. run 'npm run dist'
 	
-How to run:
-1. /var/monkey/monkey_island/linux/run.sh
+10. Add firewall rules
+   10.1 sudo firewall-cmd --zone=public --add-port=5000/tcp --permanent
+   10.2 sudo firewall-cmd --reload
 
-How to Install as a Daemon
-sudo cp /var/monkey/monkey_island/linux/rhel/systemd/*.service /lib/systemd/system/
+How to run:
+/var/monkey/monkey_island/linux/run.sh
+
+How to Install as a Daemon:
+    sudo cp /var/monkey/monkey_island/linux/rhel/systemd/*.service /lib/systemd/system/
 
 Enable boot start with the following commands
- systemctl daemon-reload
- systemctl enable monkey-mongo.service
- systemctl enable monkey-island.service 
+    sudo systemctl daemon-reload
+    sudo systemctl enable monkey-mongo.service
+    sudo systemctl enable monkey-island.service 
